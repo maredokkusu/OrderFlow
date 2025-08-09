@@ -3,14 +3,14 @@
     public class OrderDto
     {
         public int Id { get; set; }
-        public string CustomerName { get; set; }
-        
-        public string ProductName { get; set; }
+        public DateTime Date { get; set; }
+
+        public int CustomerId { get; set; }
+        public string CustomerName { get; set; } = string.Empty;
+
+        public List<OrderItemSummaryDto> Items { get; set; } = new();
+
         public decimal TotalAmount { get; set; }
-        public int Quantity { get; set; }
-}
-        public class CreateOrderDto { 
-            public string ProductName { get; set; }
-            public int Quantity { get; set; }
     }
+
 }
