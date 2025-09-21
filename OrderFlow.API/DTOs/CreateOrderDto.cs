@@ -7,7 +7,7 @@ namespace OrderFlow.API.DTOs
     {
         public int Id { get; set; }
 
-        public DateTime Date { get; set; }
+        public DateTime Date { get; set; } = DateTime.Now;
         public Customer Customer { get; set; }
 
         public List<OrderItem> Items { get; set; }

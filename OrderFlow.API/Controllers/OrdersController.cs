@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using OrderFlow.API.Models;
 using OrderFlow.API.DTOs;
 using OrderFlow.API.Services.Interfaces;
+using System.Security.Claims;
 
 namespace OrderFlow.API.Controllers
 {
@@ -18,6 +19,8 @@ namespace OrderFlow.API.Controllers
         //Create a order made by the Client
         [HttpPost]
         public ActionResult<OrderSummaryDto> Create([FromBody] CreateOrderDto newOrder) {
+            var userIdfromToken = (User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            if (userIdfromToken == null) { return Forbid("You must be logged to create a order "); }
             var createdOrder = _orderService.CreateOrderAsync(newOrder);
             return CreatedAtAction(nameof(GetById), new { id = createdOrder.Id }, createdOrder);
         }

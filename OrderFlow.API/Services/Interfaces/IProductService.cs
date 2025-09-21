@@ -5,7 +5,7 @@ namespace OrderFlow.API.Services.Interfaces
 {
     public interface IProductService
     {
-        Task<int> CreateProductAsync(ProductDto ProductDto);
+        Task<int> CreateProductAsync(ProductDto ProductDto, int OwnerId);
         Task<List<ProductDto>>GetAllProductsAsync();
         Task<ProductDto?> GetProductByIdAsync(int id);
 

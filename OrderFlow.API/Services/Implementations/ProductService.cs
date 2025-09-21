@@ -14,11 +14,12 @@ namespace OrderFlow.API.Services.Implementations
                 _context = context;
             }
         }
-            public async Task<int > CreateProductAsync(ProductDto productDto) {
+            public async Task<int > CreateProductAsync(ProductDto productDto,int OwnerId) {
             var product = new Product
             {
                 ProductName = productDto.ProductName,
                 Description = productDto.Description,
+                OwnerId=productDto.OwnerId,
                 Price= productDto.Price,
                 Stock= productDto.Stock,
                 ProductCategory = productDto.ProductCategory, 

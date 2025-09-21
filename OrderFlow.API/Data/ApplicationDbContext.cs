@@ -16,6 +16,7 @@ namespace OrderFlow.API.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<Customer> Customers { get; set; }
 
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

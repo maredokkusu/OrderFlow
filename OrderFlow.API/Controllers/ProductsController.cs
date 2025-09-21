@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OrderFlow.API.DTOs;
 using OrderFlow.API.Models;
 using OrderFlow.API.Services.Interfaces;
+using System.Security.Claims;
 namespace OrderFlow.API.Controllers
 {
     [ApiController]
@@ -10,10 +12,12 @@ namespace OrderFlow.API.Controllers
     {
         private readonly IProductService _productService;
         public ProductsController(IProductService productService) { _productService = productService; }
-    
+    [Authorize]
     [HttpPost]
         public async Task<IActionResult> CreateProduct([FromBody] ProductDto productDto) {
-            var ProductId = await _productService.CreateProductAsync(productDto);
+
+            var userIdFromToken = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var ProductId = await _productService.CreateProductAsync(productDto, userIdFromToken);
             return CreatedAtAction(nameof(GetProductById), new { id = ProductId }, null);
         }
         [HttpGet]
@@ -29,16 +33,30 @@ namespace OrderFlow.API.Controllers
             if (product == null) { return NotFound(); }
             return Ok(product);
         }
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProduct(int id,[FromBody] ProductDto productdto)
         {
+            var userIdFromToken = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var product = await _productService.GetProductByIdAsync(id);
+            if (product==null)return NotFound();
+            if (product.OwnerId != userIdFromToken) {
+                return Forbid("YOU AREN´T THE OWNER YOU CAN'T UPDATE THIS PRODUCT");
+            };
             var updated = await _productService.UpdateProductByIdAsync(id, productdto);
-            if (updated==null) { return NotFound(); };
             return NoContent();
 
         }
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct( int id ) {
+            var userIdFromToken = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var product = await _productService.GetProductByIdAsync(id);
+            if (product==null) return NotFound();
+            if (userIdFromToken != product.OwnerId)
+            {
+                return Forbid("YOU AREN´T THE OWNER YOU CAN´T DELETE THIS PRODUCT");
+            }
             var deleted = await _productService.DeleteProductByIdAsync(id);
             if (!deleted) { return NotFound(); };
             return NoContent();

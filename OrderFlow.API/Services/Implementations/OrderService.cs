@@ -41,7 +41,7 @@ namespace OrderFlow.API.Services.Implementations
             return new OrderSummaryDto
             {
                 Id = order.Id,
-                CustomerName = order.Customer.CustomerName,
+                CustomerName = order.Customer.UserName,
                 ProductName = order.Items.FirstOrDefault()?.Product?.ProductName ?? string.Empty,
                 Quantity = order.Quantity,
                 Items = order.Items.Select(o => new OrderItemSummaryDto
